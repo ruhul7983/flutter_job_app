@@ -27,6 +27,7 @@ class TextInputField extends StatelessWidget {
           labelText: hintText,
         ),
         obscureText: isPass,
+
       ),
     );
   }

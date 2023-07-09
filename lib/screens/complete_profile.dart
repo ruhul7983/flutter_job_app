@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:job_app/screens/select_expertise_screen.dart';
 import 'package:job_app/widgets/auth_button.dart';
 import 'package:job_app/widgets/text_field.dart';
@@ -16,19 +17,34 @@ class CompleteProfile extends StatefulWidget {
   State<CompleteProfile> createState() => _CompleteProfileState();
 }
 final TextEditingController nameController = TextEditingController();
-final TextEditingController dovController = TextEditingController();
+final TextEditingController dobController = TextEditingController();
 final TextEditingController locationController = TextEditingController();
 final TextEditingController contactController = TextEditingController();
 
 Uint8List? _image;
 
-
+DateTime? _selectedDate;
 class _CompleteProfileState extends State<CompleteProfile> {
   Future<void> selectImage() async {
     Uint8List im = await pickImage(ImageSource.gallery);
     setState(() {
       _image = im;
     });
+  }
+
+   Future<DateTime?> selectDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime(2005),
+        firstDate: DateTime(1970),
+        lastDate: DateTime(2015));
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate;
+        final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        dobController.text = formatter.format(_selectedDate!);
+      });
+    }
   }
 
 
@@ -93,13 +109,30 @@ class _CompleteProfileState extends State<CompleteProfile> {
                 ),
 
                 TextInputField(textEditingController: nameController, hintText: "Enter your full name", textInputType: TextInputType.text),
-                TextInputField(textEditingController: dovController, hintText: "Date of Birth", textInputType: TextInputType.text),
+                //TextInputField(textEditingController: dobController, hintText: "Date of Birth", textInputType: TextInputType.text),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20,bottom: 12),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Date of Birth',
+                    ),
+                    onTap: (){
+                      selectDate();
+                    },
+                    controller: dobController,
+                  ),
+                ),
                 TextInputField(textEditingController: locationController, hintText: "Location", textInputType: TextInputType.text),
                 TextInputField(textEditingController: contactController, hintText: "Contact Number", textInputType: TextInputType.phone),
                 SizedBox(height: mq.height * 0.01,),
                 InkWell(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=>SelectExpertise()));
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                          SelectExpertise(name: nameController.text,
+                            dob: dobController.text,
+                            location: locationController.text,
+                            number: contactController.text,
+                            image: _image!,)));
                     },
                     child: AuthButton(text: 'Next')),
               ],

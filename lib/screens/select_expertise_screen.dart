@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:job_app/resources/firestore_method.dart';
 import 'package:job_app/screens/signup_screen.dart';
 import 'package:job_app/utils/colors.dart';
 import 'package:job_app/widgets/auth_button.dart';
@@ -6,7 +9,12 @@ import 'package:job_app/widgets/auth_button.dart';
 import '../main.dart';
 
 class SelectExpertise extends StatefulWidget {
-  const SelectExpertise({Key? key}) : super(key: key);
+  final String name;
+  final String dob;
+  final String location;
+  final String number;
+  final Uint8List image;
+  const SelectExpertise({Key? key, required this.name, required this.dob, required this.location, required this.number, required this.image}) : super(key: key);
 
   @override
   State<SelectExpertise> createState() => _SelectExpertiseState();
@@ -77,7 +85,8 @@ class _SelectExpertiseState extends State<SelectExpertise> {
 
             InkWell(
                 onTap: (){
-                  print(emailController);
+                  FireStoreMethod().completeProfile(widget.name, widget.dob, widget.location, widget.number, widget.image, selectedValues.toList());
+                  print(selectedValues);
                 },
                 child: AuthButton(text: "Submit")),
 

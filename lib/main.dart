@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:job_app/screens/bottom_nav.dart';
 import 'package:job_app/screens/splash_screen.dart';
 import 'package:job_app/utils/colors.dart';
 
@@ -27,7 +29,19 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: mobileBackgroundColor,
         appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.black))
       ),
-      home: SplashScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.active){
+            if(snapshot.hasData){
+              return Bottom_Nav();
+            }else if(snapshot.hasError){
+              return SplashScreen();
+            }
+          }
+          return SplashScreen();
+        }
+      ),
     );
   }
 }

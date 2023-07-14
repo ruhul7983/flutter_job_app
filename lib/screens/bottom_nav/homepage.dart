@@ -1,7 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:job_app/resources/firestore_method.dart';
+import 'package:job_app/screens/bottom_nav/categories_show/full_time.dart';
+import 'package:job_app/screens/bottom_nav/categories_show/part_time.dart';
+import 'package:job_app/screens/bottom_nav/categories_show/remote_post.dart';
+import 'package:job_app/screens/feature_screen/details_job_post.dart';
+import 'package:job_app/screens/feature_screen/search_screen.dart';
 import 'package:job_app/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 import '../../main.dart';
+import '../../model/user.dart';
+import '../../provider/user_provider.dart';
 import '../../widgets/job_post_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,10 +22,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    addData();
+    getRemoteData();
+    getFullData();
+    getPartData();
+    super.initState();
+  }
+  addData() async {
+    UserProvider _userProvider = Provider.of(context,listen: false);
+    await _userProvider.refreshUser();
+  }
+  String dataRemote = '';
+  String dataFull = '';
+  String dataPart = '';
+  void getRemoteData() async {
+    String partLen = await FireStoreMethod().getRemoteLen();
+    setState(() {
+      dataRemote = partLen;
+    });
+  }
+  void getFullData() async {
+    String remoteLen = await FireStoreMethod().getFullLen();
+    setState(() {
+      dataFull = remoteLen;
+    });
+  }
+  void getPartData() async {
+    String partLen = await FireStoreMethod().getPartLen();
+    setState(() {
+      dataPart = partLen;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    //final mq = MediaQuery.of(context).size;
-    return Scaffold(
+    final UserClass user = Provider.of<UserProvider>(context).getUser;
+
+   return Scaffold(
       backgroundColor: Color(0xFFf5f6f8),
       appBar: AppBar(
         backgroundColor: mainColor,
@@ -23,29 +70,33 @@ class _HomePageState extends State<HomePage> {
         leading: Padding(
           padding: const EdgeInsets.all(7),
           child: CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"),
+            backgroundImage: NetworkImage(user.image),
           ),
         ),
-        title: Container(
-          height: mq.height * 0.05,
-          width: mq.width * 0.8,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Search job",
-                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 17),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Icon(Icons.search,size: 17,),
-              ),
-            ],
-          ),
-          decoration: BoxDecoration(
-            color: Color(0xFFf5f6f8),
-            borderRadius: BorderRadius.circular(8),
+        title: InkWell(
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (_)=>SearchScreen()));
+          },
+          child: Container(
+            height: mq.height * 0.05,
+            width: mq.width * 0.8,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Search job",
+                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 17),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Icon(Icons.search,size: 17,),
+                ),
+              ],
+            ),
+            decoration: BoxDecoration(
+              color: Color(0xFFf5f6f8),
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
         actions: [
@@ -68,8 +119,8 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    "Md Ruhul Amin",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    user.name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),maxLines: 1,overflow: TextOverflow.fade,
                   ),
                 ],
               ),
@@ -77,7 +128,7 @@ class _HomePageState extends State<HomePage> {
               Container(
                 height: mq.height * 0.18,
                 child: Image.asset(
-                  "assets/banner.jpg",
+                  "assets/banner2.jpg",
                   fit: BoxFit.cover,
                 ),
                 decoration: BoxDecoration(
@@ -92,33 +143,37 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: mq.height * 0.028),
               Row(
                 children: [
-                  Container(
-                    height: mq.height * 0.28,
-                    width: mq.width * 0.45,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFafecfe),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/remotejob.png",
-                          height: 50,
-                          width: 50,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "45.5",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Remote jobs",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=>Remote()));
+                    },
+                    child: Container(
+                      height: mq.height * 0.28,
+                      width: mq.width * 0.45,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFafecfe),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/remotejob.png",
+                            height: 50,
+                            width: 50,
+                          ),
+                          SizedBox(height: 10),
+                          Text(dataRemote,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            "Remote jobs",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -126,51 +181,61 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          height: mq.height * 0.14,
-                          width: mq.width * 0.45,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFbeb0ff),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "45.5",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                "Full Time",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=>FullTime()));
+                          },
+                          child: Container(
+                            height: mq.height * 0.14,
+                            width: mq.width * 0.45,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFbeb0ff),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  dataFull,
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  "Full Time",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: mq.height * 0.01),
-                        Container(
-                          height: mq.height * 0.14,
-                          width: mq.width * 0.45,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFffd6ae),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "45.5",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                "Part Time",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=>PartTime()));
+                          },
+                          child: Container(
+                            height: mq.height * 0.14,
+                            width: mq.width * 0.45,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFffd6ae),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  dataPart,
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  "Part Time",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -184,14 +249,32 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: mq.height * 0.03),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                clipBehavior: Clip.antiAlias,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                return JobPostCard();
-              },)
+              StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('posts').where('isPending',isEqualTo: 'no').snapshots(),
+                builder: (context, snapshot) {
+                  final List<DocumentSnapshot>? documents = snapshot.data?.docs;
+                  final int itemCount = documents?.length ?? 0;
+                  final int displayedItemCount = itemCount <= 10 ? itemCount : 10;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    clipBehavior: Clip.antiAlias,
+                    itemCount: displayedItemCount,
+                    itemBuilder: (context, index) {
+                      if(snapshot.connectionState==ConnectionState.waiting){
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=>DetailsJobPost(snap: snapshot.data!.docs[index] as dynamic,)));
+                          },
+                          child: JobPostCard(snap: snapshot.data!.docs[index] as dynamic,));
+                    },);
+
+                },
+              ),
             ],
           ),
         ),

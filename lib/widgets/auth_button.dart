@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class AuthButton extends StatelessWidget {
   final String text;
-  const AuthButton({Key? key, required this.text}) : super(key: key);
+  final Color? color;
+  const AuthButton({Key? key, required this.text, this.color=Colors.black}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class AuthButton extends StatelessWidget {
         height: 55,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: color,
           borderRadius: BorderRadius.circular(22),
         ),
         child: Center(child: Text(text,style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),)),

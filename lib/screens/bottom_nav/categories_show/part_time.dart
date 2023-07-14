@@ -1,45 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:job_app/screens/feature_screen/details_job_post.dart';
 import 'package:job_app/utils/colors.dart';
+import 'package:job_app/widgets/job_post_card.dart';
 
-import '../../widgets/job_post_card.dart';
+import '../../feature_screen/details_job_post.dart';
 
-class AllJobs extends StatefulWidget {
-  const AllJobs({Key? key}) : super(key: key);
+class PartTime extends StatefulWidget {
+  const PartTime({Key? key}) : super(key: key);
 
   @override
-  State<AllJobs> createState() => _AllJobsState();
+  State<PartTime> createState() => _PartTimeState();
 }
 
-class _AllJobsState extends State<AllJobs> {
+class _PartTimeState extends State<PartTime> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFf5f6f8),
       appBar: AppBar(
         backgroundColor: mainColor,
-        elevation: 0,
-        title: Text(
-          "All Jobs",
-          style: TextStyle(color: Colors.black),
-        ),
         centerTitle: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
-        ],
+        elevation: 0,
+        title: Text("Part time job",style: TextStyle(color: Colors.black),),
       ),
-      backgroundColor: Color(0xFFf5f6f8),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('posts').where('isPending',isEqualTo: 'no').orderBy('deadline',descending: true).snapshots(),
+          stream: FirebaseFirestore.instance.collection('posts').where('isPending',isEqualTo: 'no').where('categories',isEqualTo: 'Part Time').snapshots(),
           builder: (context, snapshot) {
             final List<DocumentSnapshot>? documents = snapshot.data?.docs;
             final int itemCount = documents?.length ?? 0;
             final int displayedItemCount = itemCount <= 100 ? itemCount : 100;
             return ListView.builder(
               shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               clipBehavior: Clip.antiAlias,
               itemCount: displayedItemCount,
               itemBuilder: (context, index) {

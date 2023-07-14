@@ -1,20 +1,25 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:job_app/resources/firestore_method.dart';
-import 'package:job_app/screens/signup_screen.dart';
+import 'package:job_app/resources/auth_methods.dart';
+import 'package:job_app/screens/bottom_nav.dart';
 import 'package:job_app/utils/colors.dart';
 import 'package:job_app/widgets/auth_button.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
+import '../provider/user_provider.dart';
 
 class SelectExpertise extends StatefulWidget {
   final String name;
+  final String email;
+  final String password;
   final String dob;
   final String location;
   final String number;
   final Uint8List image;
-  const SelectExpertise({Key? key, required this.name, required this.dob, required this.location, required this.number, required this.image}) : super(key: key);
+  final Uint8List cv;
+  const SelectExpertise({Key? key, required this.name, required this.dob, required this.location, required this.number, required this.image, required this.email, required this.password, required this.cv}) : super(key: key);
 
   @override
   State<SelectExpertise> createState() => _SelectExpertiseState();
@@ -40,6 +45,32 @@ class _SelectExpertiseState extends State<SelectExpertise> {
         selectedValues.remove(item);
       }
     });
+  }
+  @override
+  void initState() {
+    addData();
+    super.initState();
+  }
+  addData() async {
+    UserProvider _userProvider = Provider.of(context,listen: false);
+    await _userProvider.refreshUser();
+  }
+  Future<void> singUP() async {
+     String res =await AuthMethod()
+        .SingUp(
+        widget.email,
+        widget.password,
+        widget.name,
+        widget.dob,
+        widget.location,
+        widget.number,
+        widget.image,
+        widget.cv,
+        selectedValues.toList());
+    if(res == 'success'){
+      await addData();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>BottomNav()));
+    }
   }
 
   @override
@@ -85,8 +116,10 @@ class _SelectExpertiseState extends State<SelectExpertise> {
 
             InkWell(
                 onTap: (){
-                  FireStoreMethod().completeProfile(widget.name, widget.dob, widget.location, widget.number, widget.image, selectedValues.toList());
-                  print(selectedValues);
+                  singUP();
+                  //FireStoreMethod().completeProfile(widget.name, widget.dob, widget.location, widget.number, widget.image, selectedValues.toList());
+                  //Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>BottomNav()));
+
                 },
                 child: AuthButton(text: "Submit")),
 

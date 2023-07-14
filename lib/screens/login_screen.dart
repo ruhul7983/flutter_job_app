@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:job_app/screens/login_screen.dart';
+import 'package:job_app/resources/auth_methods.dart';
+import 'package:job_app/screens/bottom_nav.dart';
+import 'package:job_app/screens/signup_screen.dart';
 import 'package:job_app/widgets/auth_button.dart';
 import 'package:job_app/widgets/text_field.dart';
 
 import '../main.dart';
-import 'complete_profile.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<Login> createState() => _LoginState();
 }
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 
-class _SignUpState extends State<SignUp> {
+class _LoginState extends State<Login> {
   GlobalKey<FormState> formKey =GlobalKey<FormState>();
-  void validate(){
+  Future<void> validate() async {
     if(formKey.currentState!.validate()){
-      Navigator.push(context, MaterialPageRoute(builder: (_)=>CompleteProfile(email: emailController.text,password: passwordController.text,)));
+      //Navigator.push(context, MaterialPageRoute(builder: (_)=>CompleteProfile(email: emailController.text,password: passwordController.text,)));
+        String res = await AuthMethod().loginUser(email: emailController.text, password: passwordController.text);
+        if(res == 'success'){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>BottomNav()));
+        }
     }
   }
 
@@ -42,11 +47,11 @@ class _SignUpState extends State<SignUp> {
                     children: [
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment:CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 15.0),
-                            child: Text("Register",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),),
+                            child: Text("Login",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15.0),
@@ -74,7 +79,7 @@ class _SignUpState extends State<SignUp> {
                         validate();
                         //Navigator.push(context, MaterialPageRoute(builder: (_)=>CompleteProfile()));
                       },
-                      child: AuthButton(text: "Next")),
+                      child: AuthButton(text: "Login")),
                   SizedBox(height: mq.height* 0.04,),
                   Padding(
                     padding: const EdgeInsets.only(left: 16,right: 16),
@@ -84,9 +89,9 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(height: mq.height * 0.02,),
                   InkWell(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_)=>Login()));
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=>SignUp()));
                       },
-                      child: Text("Have a account? Login",style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
+                      child: Text("Don't have account? Sign up",style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
                 ],
               ),
             ),

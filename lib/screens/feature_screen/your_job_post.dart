@@ -1,18 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:job_app/screens/feature_screen/details_job_post.dart';
 import 'package:job_app/utils/colors.dart';
 
 import '../../widgets/job_post_card.dart';
 
-class AllJobs extends StatefulWidget {
-  const AllJobs({Key? key}) : super(key: key);
+class YourJobPost extends StatefulWidget {
+  const YourJobPost({Key? key}) : super(key: key);
 
   @override
-  State<AllJobs> createState() => _AllJobsState();
+  State<YourJobPost> createState() => _YourJobPostState();
 }
 
-class _AllJobsState extends State<AllJobs> {
+class _YourJobPostState extends State<YourJobPost> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +21,7 @@ class _AllJobsState extends State<AllJobs> {
         backgroundColor: mainColor,
         elevation: 0,
         title: Text(
-          "All Jobs",
+          "Posted by You",
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -32,7 +33,7 @@ class _AllJobsState extends State<AllJobs> {
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('posts').where('isPending',isEqualTo: 'no').orderBy('deadline',descending: true).snapshots(),
+          stream: FirebaseFirestore.instance.collection('posts').where('uid',isEqualTo: FirebaseAuth.instance.currentUser!.uid).snapshots(),
           builder: (context, snapshot) {
             final List<DocumentSnapshot>? documents = snapshot.data?.docs;
             final int itemCount = documents?.length ?? 0;

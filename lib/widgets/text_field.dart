@@ -15,12 +15,20 @@ class TextInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(
-      borderSide: Divider.createBorderSide(context).copyWith(color: Colors.black),
-    );
     return Padding(
       padding: const EdgeInsets.only(left: 20,right: 20,bottom: 12),
-      child: TextField(
+      child: TextFormField(
+        validator: (val){
+          if(val!.isEmpty ){
+            return "Required";
+          }else if(isPass == true){
+            if(val.length < 6){
+              return 'Minimum 6 Character';
+            }
+          }
+          return null;
+        },
+
         controller: textEditingController,
         keyboardType: textInputType,
         decoration: InputDecoration(

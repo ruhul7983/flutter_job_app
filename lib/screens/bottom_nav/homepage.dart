@@ -25,7 +25,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    addData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addData();
+    });
     getRemoteData();
     getFullData();
     getPartData();

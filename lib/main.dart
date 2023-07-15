@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Job App',
+        title: 'Job Portal BD',
         theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: mobileBackgroundColor,
           appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.black))

@@ -18,12 +18,12 @@ class UserProvider with ChangeNotifier {
       UserClass user = await _authMethods.getUserDetails();
       _user = user;
       _isLoading = false;
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         notifyListeners();
       });
     } catch (error) {
       _isLoading = false;
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         notifyListeners();
       });
       // Handle the error here, you can show an error dialog or display a message on the screen.

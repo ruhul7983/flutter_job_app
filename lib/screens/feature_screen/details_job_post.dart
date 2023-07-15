@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:job_app/screens/feature_screen/apply_now.dart';
+import 'package:job_app/screens/feature_screen/see_who_applied.dart';
 import 'package:job_app/utils/colors.dart';
 import 'package:job_app/widgets/auth_button.dart';
 
@@ -16,6 +17,7 @@ class DetailsJobPost extends StatefulWidget {
 }
 
 class _DetailsJobPostState extends State<DetailsJobPost> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +89,11 @@ class _DetailsJobPostState extends State<DetailsJobPost> {
               Text('Company Website: ',style: TextStyle(fontSize: 18,color: Color(0xFF740656),fontWeight: FontWeight.bold),),
               Text(widget.snap['website'],style: TextStyle(fontSize: 17,color: Colors.black)),
               widget.snap['uid']==FirebaseAuth.instance.currentUser!.uid?
-                  AuthButton(text: "Your job post",color: Colors.red,)
+                  InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=>SeeWhoApplied(snap: widget.snap,)));
+                      },
+                      child: AuthButton(text: "See who applied",color: Colors.lightGreen,))
                   :widget.snap['appliedBy'].contains(FirebaseAuth.instance.currentUser!.uid)?AuthButton(text: "Already Applied(${widget.snap['appliedBy'].length})",color: Colors.green,):InkWell(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (_)=>ApplyNow(snap: widget.snap,)));

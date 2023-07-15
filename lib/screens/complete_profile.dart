@@ -54,6 +54,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
         dobController.text = formatter.format(_selectedDate!);
       });
     }
+    return pickedDate;
   }
   GlobalKey<FormState> formKey =GlobalKey<FormState>();
   void validate(){

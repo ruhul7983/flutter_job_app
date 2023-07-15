@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:job_app/screens/feature_screen/pdf_view.dart';
+import 'package:job_app/screens/feature_screen/personal_details.dart';
 import 'package:job_app/screens/feature_screen/your_job_post.dart';
 import 'package:job_app/screens/signup_screen.dart';
 import 'package:job_app/utils/colors.dart';
@@ -79,7 +80,11 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: Column(
                   children: [
-                    ProfilePageText(text: "Personal Details",icon: Icon(Icons.person)),
+                    InkWell(
+                        onTap:(){
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=>PersonalDetails()));
+                        },
+                        child: ProfilePageText(text: "Personal Details",icon: Icon(Icons.person))),
                     InkWell(
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (_)=>PdfView()));

@@ -54,6 +54,8 @@ class _AddJobState extends State<AddJob> {
         deadlineController.text = formatter.format(_selectedDate!);
       });
     }
+    return pickedDate;
+
   }
 
   var selectedExperience = 'Freshers';

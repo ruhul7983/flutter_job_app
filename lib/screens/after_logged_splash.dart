@@ -17,7 +17,9 @@ class AfterLoginSplash extends StatefulWidget {
 class _AfterLoginSplashState extends State<AfterLoginSplash> {
   @override
   void initState() {
-    addData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addData();
+    });
     whereTogo();
     super.initState();
   }

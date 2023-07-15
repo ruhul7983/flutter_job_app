@@ -25,9 +25,6 @@ class _YourJobPostState extends State<YourJobPost> {
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
-        ],
       ),
       backgroundColor: Color(0xFFf5f6f8),
       body: Padding(
